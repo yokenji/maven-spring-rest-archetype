@@ -8,7 +8,7 @@
   <version>${version}</version>
 
   <name>Custom Maven project</name>
-  <url>http://www.mattheeuws.com</url>
+  <url>http://www.delsael.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
