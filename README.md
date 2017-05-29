@@ -1,8 +1,5 @@
-# Maven Spring MVC Archetype [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# Maven Spring MVC Archetype 
 > Generate Spring MVC Project
-
-## maven-spring-mvc-archetype
-Spring MVC archetype
 
 ## Installation 
 First make sure you have maven installed, then go into the directory of the generator and install the archetype using this command.
@@ -14,11 +11,12 @@ mvn install
 Then generate a project by going into your workspace and executing the bash script found at : 
     https://github.com/yokenji/spring-mvc-gen.sh 
 
-with a groupId (-g) and an artifact id (-a)
+with a groupId (-g) and an artifact id (-a). 
+This will generate 
 
 
 
-# Fields to fill in 
+## Empty Fields
 file : resources/dev/database.properties
     fields : password
 
