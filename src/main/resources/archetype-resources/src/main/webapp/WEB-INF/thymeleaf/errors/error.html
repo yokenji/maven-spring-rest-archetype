@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      layout:decorator="fragments/layout">
+  <body>
+    <div layout:fragment="content">
+
+      <div class="col-md-12">
+        <h2 th:text="#{err.page.not.found}">Seems like the page you are looking for does not exists or has moved.</h2>
+        <p>
+          <span th:text="#{err.url.goto}">Go to the</span> <b><a href="#" th:href="@{/dashboard}" th:text="#{err.url.homePage}">Home page</a></b> <span th:text="#{err.url.other}">or choose an item for the sidebar.</span>
+        </p>
+      </div>
+
+    </div>
+  </body>
+</html>

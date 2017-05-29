@@ -14,6 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
     <log4j.version>2.6.2</log4j.version>
+    <log4j2-gelf.version>1.3.1</log4j2-gelf.version>
     <junit.version>4.12</junit.version>
 
     <spring-framework.version>4.3.2.RELEASE</spring-framework.version>
@@ -25,11 +26,14 @@
     <thymeleaf-extra-springsecurity4.version>3.0.0.RELEASE</thymeleaf-extra-springsecurity4.version>
     <thymeleaf-layout-dialect.version>2.0.1</thymeleaf-layout-dialect.version>
 
-    <hibernate.validator>5.1.3.Final</hibernate.validator>
-    <hibernate.entitymanager>4.3.10.Final</hibernate.entitymanager>
+    <hibernate.validator>5.4.1.Final</hibernate.validator>
+    <hibernate.entitymanager>5.2.10.Final</hibernate.entitymanager>
     <mysql.connector>5.1.35</mysql.connector>
 
-    <tomcat.service.port>7171</tomcat.service.port>
+    <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
+    <java-mail.version>1.4.7</java-mail.version>
+
+    <tomcat.service.port>7272</tomcat.service.port>
   </properties>
 
   <profiles>
@@ -43,6 +47,31 @@
             <directory>src/main/resources/dev</directory>
           </resource>
         </resources>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.5.0</version>
+            <executions>
+              <execution>
+                <id>exec-npm-run</id>
+                <phase>generate-sources</phase>
+                <configuration>
+                  <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
+                  <executable>npm</executable>
+                  <arguments>
+                    <argument>run</argument>
+                    <argument>dev</argument>
+                    <argument>${project.artifactId}</argument>
+                  </arguments>
+                </configuration>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
 
@@ -55,10 +84,72 @@
             <directory>src/main/resources/prod</directory>
           </resource>
         </resources>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.5.0</version>
+            <executions>
+              <execution>
+                <id>exec-npm-run</id>
+                <phase>generate-sources</phase>
+                <configuration>
+                  <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
+                  <executable>npm</executable>
+                  <arguments>
+                    <argument>run</argument>
+                    <argument>prod</argument>
+                    <argument>${project.artifactId}</argument>
+                  </arguments>
+                </configuration>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
-  </profiles>
 
+        <!-- Test environment. -->
+    <profile>
+      <id>test</id>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources/test</directory>
+          </resource>
+        </resources>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.5.0</version>
+            <executions>
+              <execution>
+                <id>exec-npm-run</id>
+                <phase>generate-sources</phase>
+                <configuration>
+                  <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
+                  <executable>npm</executable>
+                  <arguments>
+                    <argument>run</argument>
+                    <argument>test</argument>
+                    <argument>${project.artifactId}</argument>
+                  </arguments>
+                </configuration>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
   <dependencies>
 
     <dependency>
@@ -78,6 +169,11 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.graylog2.log4j2</groupId>
+      <artifactId>log4j2-gelf</artifactId>
+      <version>${log4j2-gelf.version}</version>
     </dependency>
 
     <!-- Spring MVC layer. -->
@@ -203,6 +299,26 @@
       <version>2.0</version>
       <scope>provided</scope>
     </dependency>
+
+ <!--Quartz scheduler -->
+    <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+      <version>${quartz-scheduler.version}</version>
+    </dependency>
+
+    <!--Mailing   -->
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>javax.mail-api</artifactId>
+      <version>${java-mail.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
+      <version>${java-mail.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+  <body>
+
+    <nav class="navbar navbar-default navbar-fixed-top navbar-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-expand-toggle">
+            <i class="fa fa-bars icon"></i>
+          </button>
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
+          <ul class="nav navbar-nav pull-right">
+            <button type="button" class="navbar-right-expand-toggle pull-right visible-xs">
+                <i class="fa fa-times icon"></i>
+            </button>
+
+            <li class="dropdown pull-right" th:if="${#authorization.expression('isAuthenticated()')}">
+              <a href="#" class="dropdown-toggle user-profile" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <!--<img th:if="${#authentication.principal.photoBase64 != ''}" th:src="'data:image/JPEG;base64,' + ${#authentication.principal.photoBase64}" />-->
+                <span th:text="${#authentication.name}">Username</span>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="#" th:href="@{/logout}" ><i class="fa fa-sign-out fa-fw"></i> <span th:text="#{auth.logout}">Logout</span></a>
+                </li>
+              </ul>
+            </li>
+
+            <script th:inline="javascript">
+              var username = [[${#authentication.name}]];
+              var userLanguage = [[${#locale.language}]];
+              //console.log('Language in navTop: ' + userLanguage);
+              window.userObj_ = {
+                user: username, 
+                userLang: userLanguage
+              };
+            </script>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+  </body>
+</html>

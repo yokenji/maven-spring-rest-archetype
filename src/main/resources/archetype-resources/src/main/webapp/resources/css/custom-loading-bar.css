@@ -1,0 +1,19 @@
+#loading-bar .bar {
+  background: #0f4336;
+}
+
+/* Fancy blur effect */
+#loading-bar .peg {
+  -moz-box-shadow: #0f4336 1px 0 6px 1px;
+  -ms-box-shadow: #0f4336 1px 0 6px 1px;
+  -webkit-box-shadow: #0f4336 1px 0 6px 1px;
+  box-shadow: #0f4336 1px 0 6px 1px;
+}
+
+#loading-bar-spinner .spinner-icon {
+  width: 20px;
+  height: 20px;
+
+  border-top-color:  #0f4336;
+  border-left-color: #0f4336;
+}

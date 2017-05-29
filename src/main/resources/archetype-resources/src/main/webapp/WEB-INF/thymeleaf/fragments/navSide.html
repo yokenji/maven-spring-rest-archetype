@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+  <body>
+
+    <div class="side-menu sidebar-inverse">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="side-menu-container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+              <div class="icon fa fa-paper-plane"></div>
+              <div class="title">WebApp</div>
+            </a>
+            <button type="button" class="navbar-expand-toggle pull-right visible-xs">
+              <i class="fa fa-times icon"></i>
+            </button>
+          </div>
+          <ul class="nav navbar-nav">
+
+            <li class="navroot">
+              <a href="#" th:href="@{/dashboard}">
+                <span class="icon fa fa-tachometer"></span><span class="title" th:text="#{nav.sidebar.dashboard}">Dashboard</span>
+              </a>
+            </li>
+
+            <li class="navroot" sec:authorize="hasRole('ROLE_ADMIN')">
+              <a href="#" th:href="@{/users}">
+                <span class="icon fa fa-users"></span><span class="title">Users</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </nav>
+    </div>
+
+  </body>
+</html>
+
+
