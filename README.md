@@ -2,7 +2,7 @@
 > Generate Spring MVC Project
 
 ## Installation 
-First make sure you have maven installed, then go into the directory of the generator and install the archetype using this command.
+First make sure you have [maven](https://maven.apache.org/) installed, then go into the directory of the generator and install the archetype using this command.
 
 ```bash
 mvn install
@@ -12,7 +12,7 @@ Then generate a project by going into your workspace and executing the bash scri
     https://github.com/yokenji/spring-mvc-gen.sh 
 
 with a groupId (-g) and an artifact id (-a). 
-This will generate 
+This will generate an eclipse spring mvc project
 
 
 
