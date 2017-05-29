@@ -1,6 +1,8 @@
 # maven-spring-mvc-archetype
 Spring MVC archetype
 
+Maven archetype for creating a Spring MVC WebApp with authentication
+
 # Fields to fill in 
 file : resources/dev/database.properties
     fields : password
