@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="fragments/layout">
+  <body>
+    <div layout:fragment="content">
+
+      <div class="row" data-ng-controller="usersController as vm">
+        <div class="col-md-12">
+          <form action="#" th:action="@{/users}">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="title">Filter</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="row no-margin-bottom">
+                  <div class="col-md-1">
+                    <label class="form-control-static" th:text="#{user.firstName}">Firstname</label>
+                  </div>
+                  <div class="col-md-5">
+                    <input type="text" id="searchByFirstName" name="searchByFirstName" class="form-control" data-ng-model="vm.searchFilters.firstName" />
+                  </div>
+                  <div class="col-md-1">
+                    <label class="form-control-static" th:text="#{user.lastName}">Lastname</label>
+                  </div>
+                  <div class="col-md-5">
+                    <input type="text" id="searchByLastName" name="searchByLastName" class="form-control" data-ng-model="vm.searchFilters.lastName" />
+                  </div>
+                </div>
+                <div class="row no-margin-bottom">
+                  <div class="col-md-12">
+                    <div class="form-group no-margin-bottom pull-right">
+                      <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                        <span th:text="#{btn.search}">Search</span>
+                      </button>
+                      <button type="reset" class="btn btn-default">
+                        <i class="fa fa-eraser fa-fw" aria-hidden="true"></i>
+                        <span th:text="#{btn.resetFilter}">Reset Filter</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <script th:inline="javascript">
+                    window.searchFilters = {
+                      firstName: [[${searchByFirstName}]],
+                      lastName: [[${searchByLastName}]]
+                    }
+                </script>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title col-md-2">
+                <div class="title" th:text="#{users.title}">Users</div>
+              </div>
+              <div class="col-md-8 card-search-filter">
+              </div>
+              <div class="col-md-2 btn-toolbar">
+                <a href="#" th:href="@{/users/add}">
+                  <button type="button" class="btn btn-success pull-right">
+                    <i class="fa fa-plus fa-fw"></i>
+                    <span th:text="#{btn.add}">Add</span>
+                  </button>
+                </a>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th th:text="#{user.user}">User</th>
+                      <th th:text="#{user.login}">Login</th>
+                      <th th:text="#{user.role}">Role</th>
+                      <th th:text="#{table.action}">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="user : ${users}">
+                      <td th:text="${user.lastName + ', ' + user.firstName}">lastName, firstName</td>
+                      <td th:text="${user.login}">login</td>
+                      <td th:text="${user.role}">role</td>
+                      <td>
+                        <a href="#" th:href="@{'/users/edit/' + ${user.id}}">
+                          <i class="fa fa-pencil"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Add navigation. -->
+                <nav th:replace="fragments/paginationBar :: nav ('/users', ${searchFilterString})"></nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

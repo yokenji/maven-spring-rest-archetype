@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WebApp</title>
+
+    <div th:replace="fragments/styleLoaders"></div>
+
+  </head>
+
+  <body class="app" data-ng-app="myApp">
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <div class="navbar-brand">
+            <span class="app-title">
+              <span class="">MY</span>WebApp
+            </span>
+            <span class="">Login</span>
+          </div>
+        </div>
+        <div class="clock hidden-xs" data-ng-controller="clockController as vm">
+          <div class="time" ng-bind="vm.time"></div>
+          <div class="date" >
+            <div class="day" ng-bind="vm.day"></div>
+            <div class="year" ng-bind="vm.year"></div>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </nav>
+
+    <div class="clear"></div>
+    <div class="container-fluid">
+
+
+      <div class="row">
+        <div class="absolute-center">
+          <div class="col-md-12 col-lg-12">
+
+            <div class="col-md-6 col-lg-4 col-md-offset-1">
+              <div class="card login-card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                  <form class="form-horizontal" data-rol="form" th:action="@{/login}" method="post">
+
+                    <!--[if IE]><div class="alert alert-danger fresh-color" th:text="#{springSecurity.oldBrowser}"></div><![endif]-->
+
+                    <div class="alert alert-success fresh-color" th:if="${(param.success != null) and (param.success[0] == 'logOut')}" th:text="#{springSecurity.logout}">
+                      Your've logged out successfully.
+                    </div>
+
+                    <div class="alert alert-danger fresh-color" th:if="${(param.error != null) and (param.error[0] == 'authFailed')}" th:text="#{springSecurity.badCredentials}">
+                      The username or password you entered is incorrect.
+                    </div>
+
+                    <div class="alert alert-danger fresh-color" th:if="${(param.error != null) and (param.error[0] == 'invalidSession')}" th:text="#{springSecurity.invalidSession}">
+                      Invalid session.
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-2 col-lg-4" th:text="#{auth.login}">Login</label>
+                      <div class="col-md-10 col-lg-8">
+                        <input type="text" class="form-control" id="username" name="username" autofocus="autofocus" />
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-2 col-lg-4" th:text="#{auth.password}">Password</label>
+                      <div class="col-md-10 col-lg-8">
+                        <input type="password" class="form-control" id="password" name="password" />
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="col-md-offset-2 col-md-10 col-lg-4">
+                        <button type="submit" class="btn btn-primary" th:text="#{auth.submit}">Login</button>
+<!--                         <span class="pull-right"><a href="#">Forgot password?</a></span>  -->
+                      </div>
+                    </div>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="fragments/scriptLoaders"></div>
+
+  </body>
+</html>

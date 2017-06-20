@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <nav th:fragment="pagination" data-ng-cloak="data-ng-cloak">
+      <ul class="pagination">
+
+        <li data-ng-class="{disabled: vm.currentPage == 1}">
+          <span data-ng-if="vm.currentPage <= 1">
+            <span th:text="#{pagination.first}">First</span>
+          </span>
+          <span data-ng-if="vm.currentPage > 1">
+            <a href="#1" data-ng-click="vm.selectPage(1)">
+              <span th:text="#{pagination.first}">First</span>
+            </a>
+          </span>
+        </li>
+
+        <li data-ng-class="{disabled: vm.currentPage == 1}">
+          <span data-ng-if="vm.currentPage == 1">
+            <i class="fa fa-chevron-left"></i>
+          </span>
+          <span data-ng-if="vm.currentPage > 1">
+            <a href="#" data-ng-click="vm.selectPage(vm.currentPage - 1)">
+              <i class="fa fa-chevron-left"></i>
+            </a>
+          </span>
+        </li>
+
+        <li data-ng-repeat="page in vm.range(vm.begin, vm.end) track by $index" data-ng-class="{active: vm.currentPage == page}">
+          <a href="#{{page}}" data-ng-click="vm.selectPage(page)">{{page}}</a>
+        </li>
+
+        <li data-ng-class="{disabled: vm.currentPage == vm.totalPages}">
+          <span data-ng-if="vm.currentPage == vm.totalPages">
+            <i class="fa fa-chevron-right"></i>
+          </span>
+          <span data-ng-if="vm.currentPage < vm.totalPages">
+            <a href="#{{vm.currentPage + 1}}" data-ng-click="vm.selectPage(vm.currentPage + 1)">
+              <i class="fa fa-chevron-right"></i>
+            </a>
+          </span>
+        </li>
+
+        <li data-ng-class="{disabled: vm.currentPage == vm.totalPages}">
+          <span data-ng-if="vm.currentPage == vm.totalPages">
+            <span th:text="#{pagination.last}">Last</span>
+          </span>
+          <span data-ng-if="vm.currentPage < vm.totalPages">
+            <a href="#{{vm.totalPages}}" data-ng-click="vm.selectPage(vm.totalPages)">
+              <span th:text="#{pagination.last}">Last</span>
+            </a>
+          </span>
+        </li>
+
+      </ul>
+    </nav>
+  </body>
+</html>
