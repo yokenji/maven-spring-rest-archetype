@@ -164,3 +164,49 @@ textarea {
   border-radius: 50%;
   margin-right: 10px;
 }
+
+.collapsing{
+  transition: none;
+  padding: 0px;
+}
+
+.card-body.collapse, .card-body.collapsing{
+  padding: 0px;
+}
+
+#filter > div:first-child{
+  padding-top: 25px;
+}
+
+#filter > div {
+  padding-left: 25px;
+  padding-right : 25px;
+}
+
+#filter > div:last-of-type{
+  padding-bottom: 25px;
+}
+
+#filter > form {
+  padding : 25px;
+}
+
+.pull-right.btn-toolbar > a {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.collapsible-card-body-chevron:before{
+  font-family: FontAwesome; 
+  content: "\f078";
+}
+
+.collapsed .collapsible-card-body-chevron:before{
+  font-family: FontAwesome; 
+  content: "\f053";
+}
+
+.card-title-filter {
+  width : 100%; 
+  text-align: left;
+}
