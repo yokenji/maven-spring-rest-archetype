@@ -1,0 +1,60 @@
+image: 10.127.53.89:9011/fabrice/maven-image:latest
+
+cache:
+  untracked: true
+  key: "$CI_BUILD_REF_NAME"
+  paths:
+    - node_modules/
+    - bower_components/
+    - .m2/repository
+
+variables: 
+    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+    MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
+
+stages: 
+    - build
+    - deploy
+    
+before_script: 
+        - eval $(ssh-agent -s)
+        - ssh-add <(echo "$SSH_PRIVATE_KEY")
+        - mkdir -p ~/.ssh
+        - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+maven_deploy_test:
+  stage: deploy
+  environment: 
+    name: test
+  script: 
+    - mvn $MAVEN_OPTS $MAVEN_CLI_OPTS clean package -P test
+    - scp /builds/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/target/ROOT.war tomcat_deployer@ve1-tomcat7-test.mattheeuws.com:/home/local/MATTHEEUWS/tomcat_deployer/$CI_PROJECT_NAME/
+    - ssh -t tomcat_deployer@ve1-tomcat7-test.mattheeuws.com 'sudo systemctl stop tomcat7.service &&
+      rm -rf /var/lib/tomcat7/'"'$CI_PROJECT_NAME'"'/ROOT* && 
+      mv /home/local/MATTHEEUWS/tomcat_deployer/'"'$CI_PROJECT_NAME'"'/ROOT.war /var/lib/tomcat7/'"'$CI_PROJECT_NAME'"'/ &&
+      sudo systemctl start tomcat7.service'
+  only: 
+    - test
+
+maven_deploy_production:
+  stage: deploy
+  environment: 
+    name: production
+  script: 
+    - mvn $MAVEN_OPTS $MAVEN_CLI_OPTS clean package -P prod
+    - scp /builds/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/target/ROOT.war tomcat_deployer@myportal:/home/local/MATTHEEUWS/tomcat_deployer/$CI_PROJECT_NAME/
+    - ssh -t tomcat_deployer@myportal 'sudo systemctl stop tomcat7.service &&
+      rm -rf /var/lib/tomcat7/'"'$CI_PROJECT_NAME'"'/ROOT* && 
+      mv /home/local/MATTHEEUWS/tomcat_deployer/'"'$CI_PROJECT_NAME'"'/ROOT.war /var/lib/tomcat7/'"'$CI_PROJECT_NAME'"'/ &&
+      sudo systemctl start tomcat7.service'
+  when: manual
+  only: 
+      - master
+
+maven_build:
+  stage: build
+  script: 
+    - mvn $MAVEN_CLI_OPTS $MAVEN_OPTS sonar:sonar -Dsonar.host.url='http://ve1-repo:9013' -Dsonar.analysis.mode=publish -Dsonar.projectName=$CI_PROJECT_NAME
+    - mvn $MAVEN_CLI_OPTS $MAVEN_OPTS clean package -P dev
+  only: 
+    - develop
