@@ -4,7 +4,6 @@ import javax.activation.DataHandler;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
-import com.mattheeuws.fleetmanager.email.impl.MimeType;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

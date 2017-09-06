@@ -25,7 +25,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
-import com.mattheeuws.fleetmanager.email.impl.MimeType;
 
 import ${package}.email.EmailService;
 
