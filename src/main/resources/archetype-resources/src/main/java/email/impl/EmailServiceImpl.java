@@ -2,14 +2,21 @@ package ${package}.email.impl;
 
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.mail.Address;
+import javax.mail.BodyPart;
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+
+import com.mattheeuws.fleetmanager.email.impl.MimeType;
 
 import ${package}.email.EmailService;
 
@@ -93,23 +102,36 @@ public class EmailServiceImpl implements EmailService {
     Transport.send(msg);
   }
 
-  /*
-   * (non-Javadoc)
-   * @see ${package}.email.EmailService\#sendEmailWithAttachment(java.lang.String, java.lang.String, java.lang.String, byte[])
-   */
   @Override
-  public void sendEmailWithAttachment(String to, String subject, String content, byte[] attachment) throws AddressException, MessagingException {
-    logger.info("Send email to " + to + " with subject " + subject);
+  public void sendEmail(String to, String subject, String content, DataHandler attachment, String fileName) throws AddressException, MessagingException {
+    logger.info(String.format("Send email to %s with subject %s", to, subject));
+
     Session sess = Session.getInstance(getMailProperties());
+    sess.setDebug(true);
 
-    MimeMessage mimeMessage = new MimeMessage(sess);
-    mimeMessage.setFrom();
-
-    MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+    Message message = new MimeMessage(sess);
+    message.setRecipients(Message.RecipientType.TO, toInternetAddress(to));
     message.setSubject(subject);
-    message.setTo(toInternetAddress(to));
-    message.setText(content, true);
 
-    Transport.send(mimeMessage);
+    BodyPart messageBodyPart = new MimeBodyPart();
+    messageBodyPart.setText(content);
+
+    Multipart multiPart = new MimeMultipart();
+    multiPart.addBodyPart(messageBodyPart);
+
+    messageBodyPart = new MimeBodyPart();
+    messageBodyPart.setDataHandler(attachment);
+    messageBodyPart.setFileName(fileName);
+    multiPart.addBodyPart(messageBodyPart);
+
+    message.setContent(multiPart);
+
+    Transport.send(message);
   }
+
+  @Override
+  public DataHandler getDataHandler(byte[] byteArray, MimeType type) {
+    return new DataHandler(new ByteArrayDataSource(byteArray, type.getContentType()));
+  }
+
 }

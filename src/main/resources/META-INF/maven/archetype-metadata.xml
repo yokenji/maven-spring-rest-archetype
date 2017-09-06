@@ -35,6 +35,7 @@
       <directory/>
       <includes>
         <include>README.txt</include>
+        <include>*.yml</include>
       </includes>
     </fileSet>
   </fileSets>

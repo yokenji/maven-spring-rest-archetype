@@ -7,54 +7,65 @@
     <div layout:fragment="content">
 
       <div class="row" data-ng-controller="usersController as vm">
-        <div class="col-md-12">
-          <form action="#" th:action="@{/users}">
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">
-                  <span class="title">Filter</span>
+      <div class="col-md-12">
+        <form action="#" th:action="@{/users}">
+          <div class="card">
+            <div class="card-header" data-toggle="collapse" data-target="#filter">
+              <div class="card-title card-title-filter">
+                <span class="title">Filter</span>
+                <a class="pull-right" data-toggle="collapse" data-target="#filter">
+                  <i class="fa collapsible-card-body-chevron"></i>
+                </a>
+              </div>
+              <div hidden class="col-md-2 btn-toolbar pull-right">
+                <!--<button type="reset" class="btn btn-default pull-right">
+                    <i class="fa fa-eraser fa-fw" aria-hidden="true"></i>
+                    <span th:text="#{btn.resetFilter}">Reset Filter</span>
+                  </button>-->
+              </div>
+            </div>
+            <div id="filter" class="card-body collapse in">
+              <div class="row no-margin-bottom">
+                <div class="col-md-1">
+                  <label class="form-control-static" th:text="#{user.firstName}">Firstname</label>
+                </div>
+                <div class="col-md-5">
+                  <input type="text" id="searchByFirstName" name="searchByFirstName" class="form-control" data-ng-model="vm.searchFilters.firstName"
+                  />
+                </div>
+                <div class="col-md-1">
+                  <label class="form-control-static" th:text="#{user.lastName}">Lastname</label>
+                </div>
+                <div class="col-md-5">
+                  <input type="text" id="searchByLastName" name="searchByLastName" class="form-control" data-ng-model="vm.searchFilters.lastName"
+                  />
                 </div>
               </div>
-              <div class="card-body">
-                <div class="row no-margin-bottom">
-                  <div class="col-md-1">
-                    <label class="form-control-static" th:text="#{user.firstName}">Firstname</label>
-                  </div>
-                  <div class="col-md-5">
-                    <input type="text" id="searchByFirstName" name="searchByFirstName" class="form-control" data-ng-model="vm.searchFilters.firstName" />
-                  </div>
-                  <div class="col-md-1">
-                    <label class="form-control-static" th:text="#{user.lastName}">Lastname</label>
-                  </div>
-                  <div class="col-md-5">
-                    <input type="text" id="searchByLastName" name="searchByLastName" class="form-control" data-ng-model="vm.searchFilters.lastName" />
-                  </div>
-                </div>
-                <div class="row no-margin-bottom">
-                  <div class="col-md-12">
-                    <div class="form-group no-margin-bottom pull-right">
-                      <button type="submit" class="btn btn-primary">
+              <div class="row no-margin-bottom">
+                <div class="col-md-12">
+                  <div class="form-group no-margin-bottom pull-right">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fa fa-search" aria-hidden="true"></i>
                         <span th:text="#{btn.search}">Search</span>
                       </button>
-                      <button type="reset" class="btn btn-default">
+                    <button type="reset" class="btn btn-default">
                         <i class="fa fa-eraser fa-fw" aria-hidden="true"></i>
                         <span th:text="#{btn.resetFilter}">Reset Filter</span>
                       </button>
-                    </div>
                   </div>
                 </div>
-                <script th:inline="javascript">
-                    window.searchFilters = {
-                      firstName: [[${searchByFirstName}]],
-                      lastName: [[${searchByLastName}]]
-                    }
-                </script>
               </div>
+              <script th:inline="javascript">
+                window.searchFilters = {
+                  firstName: [[${searchByFirstName }]],
+                  lastName: [[${searchByLastName }]]
+                }
+              </script>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
+    </div>
 
       <div class="row">
         <div class="col-md-12">
