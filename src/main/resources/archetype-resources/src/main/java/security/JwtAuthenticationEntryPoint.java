@@ -19,10 +19,7 @@ import com.mattheeuws.security.exception.ErrorResource;
  */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-  
-  /* (non-Javadoc)
-   * @see org.springframework.security.web.AuthenticationEntryPoint#commence(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.security.core.AuthenticationException)
-   */
+
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException expection) throws IOException, ServletException {
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
