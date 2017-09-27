@@ -1,4 +1,4 @@
-package com.mattheeuws.security.controller.rest;
+package ${package}.controller.rest;
 
 
 import java.util.List;
@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ${package}.dto.ResultMessage;
 import ${package}.dto.UserDto;
 import ${package}.dto.validator.UserDtoValidator;
-import ${package}.security.exception.CustomResourceException;
-import ${package}.security.service.UserService;
-import ${package}.security.util.Pagination;
+import ${package}.exception.CustomResourceException;
+import ${package}.service.UserService;
+import ${package}.util.Pagination;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author
