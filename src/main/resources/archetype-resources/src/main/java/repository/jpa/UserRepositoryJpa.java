@@ -8,8 +8,8 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-import com.mattheeuws.security.model.User;
-import com.mattheeuws.security.repository.UserRepository;
+import ${package}.model.User;
+import ${package}.repository.UserRepository;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

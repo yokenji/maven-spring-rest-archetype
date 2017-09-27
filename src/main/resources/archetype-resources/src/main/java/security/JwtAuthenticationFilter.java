@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mattheeuws.security.exception.ErrorResource;
-import com.mattheeuws.security.exception.InvalidTokenException;
+import ${package}.exception.ErrorResource;
+import ${package}.exception.InvalidTokenException;
 
 import io.jsonwebtoken.JwtException;
 

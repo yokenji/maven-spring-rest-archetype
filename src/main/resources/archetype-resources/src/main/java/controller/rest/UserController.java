@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mattheeuws.security.dto.ResultMessage;
-import com.mattheeuws.security.dto.UserDto;
-import com.mattheeuws.security.dto.validator.UserDtoValidator;
-import com.mattheeuws.security.exception.CustomResourceException;
-import com.mattheeuws.security.service.UserService;
-import com.mattheeuws.security.util.Pagination;
+import ${package}.dto.ResultMessage;
+import ${package}.dto.UserDto;
+import ${package}.dto.validator.UserDtoValidator;
+import ${package}.security.exception.CustomResourceException;
+import ${package}.security.service.UserService;
+import ${package}.security.util.Pagination;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

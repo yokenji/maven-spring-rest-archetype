@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.mattheeuws.security.dto.RoleDto;
-import com.mattheeuws.security.service.RoleService;
+import ${package}.dto.RoleDto;
+import ${package}.service.RoleService;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

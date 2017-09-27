@@ -39,7 +39,7 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
    */
   @Override
   protected String[] getServletMappings() {
-    return new String[] {"/api/*};
+    return new String[] {"/api/*"};
   }
 
   @Override

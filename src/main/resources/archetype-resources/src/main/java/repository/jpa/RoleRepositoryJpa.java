@@ -7,8 +7,8 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
-import com.mattheeuws.security.model.Role;
-import com.mattheeuws.security.repository.RoleRepository;
+import ${package}.model.Role;
+import ${package}.repository.RoleRepository;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

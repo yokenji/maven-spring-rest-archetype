@@ -20,10 +20,9 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.mattheeuws.security.security.CustomUserDetailsService;
-import com.mattheeuws.security.security.JwtAuthenticationAccessDeniedHandler;
-import com.mattheeuws.security.security.JwtAuthenticationEntryPoint;
-import com.mattheeuws.security.security.JwtAuthenticationFilter;
+import ${package}.security.JwtAuthenticationAccessDeniedHandler;
+import ${package}.security.JwtAuthenticationEntryPoint;
+import ${package}.security.JwtAuthenticationFilter;
 
 import ${package}.model.type.UserRole;
 import ${package}.security.AccessDeniedHandler;
