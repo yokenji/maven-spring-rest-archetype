@@ -1,21 +1,4 @@
-/**
- * File $Id$
- * Created on Sep 19, 2017
- *
- * Copyright (C) 2000-2017, Romac Fuels nv, All rights reserved.
- * 
- * License to use this software is restricted to companies
- * that have signed a non-disclosure agreement with Romac Fuels.
- * 
- * CONFIDENTIAL
- *
- * @author     Delsael Kenji <kenji@romacfuels.com>, Original Author
- * @copyright  Romac Fuels nv, 2000-2017
- * @license    CONFIDENTIAL
- * @package    com.mattheeuws.security.security
- * @version    $Id LastChangedRevision$
- */
-package com.mattheeuws.security.security;
+package ${package}.security;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
