@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -17,6 +18,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.mattheeuws.security.security.CustomUserDetailsService;
+import com.mattheeuws.security.security.JwtAuthenticationAccessDeniedHandler;
+import com.mattheeuws.security.security.JwtAuthenticationEntryPoint;
+import com.mattheeuws.security.security.JwtAuthenticationFilter;
 
 import ${package}.model.type.UserRole;
 import ${package}.security.AccessDeniedHandler;
@@ -30,37 +37,23 @@ import ${package}.security.CustomUserDetailsService;
  * @author Delsael Kenji <kenji@delsael.com>, Original Author
  */
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true) //securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   private CustomUserDetailsService customUserDetailsService;
-  private CustomAuthenticationSuccessHandler successHandler;
+  private JwtAuthenticationFilter jwtAuthFilter;
+  private JwtAuthenticationAccessDeniedHandler accessDeniedHandler;
+  private JwtAuthenticationEntryPoint authenticationEntryPoint;
 
-  /*@Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    // TODO: change this to your preferred authentication.
-    auth
-      .inMemoryAuthentication()
-        .withUser("user").password("password").roles("USER");
-  }
-
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    // TODO: change this to your preferred configuration.
-    http
-      .authorizeRequests()
-        .anyRequest().authenticated()
-        .and()
-      .formLogin()
-        .and()
-      .httpBasic();
-  }*/
-  
   @Autowired
-  public WebSecurityConfig(CustomUserDetailsService customUserDetailsService, CustomAuthenticationSuccessHandler successHandler) {
+  public WebSecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthenticationFilter jwtAuthFilter, 
+      JwtAuthenticationAccessDeniedHandler accessDeniedHandler,
+      JwtAuthenticationEntryPoint authenticationEntryPoint) {
     this.customUserDetailsService = customUserDetailsService;
-    this.successHandler = successHandler;
+    this.jwtAuthFilter = jwtAuthFilter;
+    this.accessDeniedHandler = accessDeniedHandler;
+    this.authenticationEntryPoint = authenticationEntryPoint;
   }
 
   @Override
@@ -69,47 +62,42 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     auth.authenticationProvider(authenticationProvider());
   }
 
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
-      .authorizeRequests()
-        .expressionHandler(webExpressionHandler())
-        .antMatchers("/resources/**").permitAll()
-        .antMatchers("/login*").permitAll()
-        .antMatchers("/users/**").access("hasRole('ROLE_ADMIN')")
-        .anyRequest().authenticated();
+      .csrf()
+      .disable()
+      .cors();
 
     http
       .sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-      .sessionFixation()
-        .newSession()
-        .invalidSessionUrl("/login?error=invalidSession")
-        .sessionAuthenticationErrorUrl("/login?alreadyLogin")
-      .maximumSessions(1)
-      .maxSessionsPreventsLogin(false)
-      .expiredUrl("/login?error=sessionExpired");
-
-    http
-      .formLogin().failureUrl("/login?error=authFailed")
-      .defaultSuccessUrl("/dashboard", true)
-      .successHandler(successHandler)
-      .loginPage("/login")
-      .permitAll()
-//      .and()
-//      .httpBasic()
-      .and()
-      .logout()
-        .logoutUrl("/logout")
-        .logoutSuccessUrl("/login?success=logOut")
-        .deleteCookies("JSESSIONID")
-        .invalidateHttpSession(false)
-        .and()
-      .csrf().disable();
+      .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     http
       .exceptionHandling()
-      .accessDeniedHandler(accessDeniedHandler());
+      .accessDeniedHandler(accessDeniedHandler)
+      .authenticationEntryPoint(authenticationEntryPoint);
+
+    http
+      .authorizeRequests()
+      .antMatchers("/api/v2/api-docs",
+          "/api/configuration/ui",
+          "/api/swagger-resources/**",
+          "/api/configuration/**",
+          "/api/swagger-ui.html",
+          "/api/webjars/**").permitAll()
+      .antMatchers("/api/v1/auth/**").permitAll()
+      .anyRequest().authenticated();
+
+    http
+      .addFilterBefore(jwtAuthFilter,
+          UsernamePasswordAuthenticationFilter.class);
   }
 
   @Bean
@@ -125,22 +113,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
-  @Bean
-  public RoleHierarchy roleHierarchy() {
-    RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-    roleHierarchy.setHierarchy(UserRole.roleHierarchy());
-    return roleHierarchy;
-  }
-
-  private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
-    DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
-    defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy());
-    return defaultWebSecurityExpressionHandler;
-  }
-
-  @Bean
-  public AccessDeniedHandler accessDeniedHandler() {
-    AccessDeniedHandler accessDeniedHandler = new AccessDeniedHandler();
-    return accessDeniedHandler;
-  }
 }

@@ -1,18 +1,15 @@
 package ${package}.repository.jpa;
 
-import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-import ${package}.model.User;
-import ${package}.repository.UserRepository;
+import com.mattheeuws.security.model.User;
+import com.mattheeuws.security.repository.UserRepository;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author
@@ -24,7 +21,7 @@ public class UserRepositoryJpa implements UserRepository {
   private EntityManager em;
 
   /* (non-Javadoc)
-   * @see ${package}.repository.BaseRepository\#save(java.lang.Object)
+   * @see com.mattheeuws.security.repository.BaseRepository\#save(java.lang.Object)
    */
   @Override
   public User save(User entity) {
@@ -32,18 +29,17 @@ public class UserRepositoryJpa implements UserRepository {
   }
 
   /* (non-Javadoc)
-   * @see ${package}.repository.BaseRepository\#findAll()
+   * @see com.mattheeuws.security.repository.BaseRepository\#findAll()
    */
   @Override
   public List<User> findAll() {
     String queryString = "from User u";
-    List<User> users = em.createQuery(queryString, User.class)
+    return em.createQuery(queryString, User.class)
         .getResultList();
-    return users;
   }
 
   /* (non-Javadoc)
-   * @see ${package}.repository.BaseRepository\#findById(java.lang.Long)9
+   * @see com.mattheeuws.security.repository.BaseRepository\#findById(java.lang.Long)9
    */
   @Override
   public User findById(Long id) {
@@ -56,7 +52,7 @@ public class UserRepositoryJpa implements UserRepository {
   }
 
   /* (non-Javadoc)
-   * @see ${package}.repository.UserRepository\#findByLogin(java.lang.String)
+   * @see com.mattheeuws.security.repository.UserRepository\#findByLogin(java.lang.String)
    */
   @Override
   public User findByLogin(String login) {
@@ -70,27 +66,21 @@ public class UserRepositoryJpa implements UserRepository {
   @Override
   public List<User> findAll(int offset, int max) {
     String queryString = "from User u";
-    List<User> results = em.createQuery(queryString, User.class)
+    return em.createQuery(queryString, User.class)
         .setFirstResult(offset)
         .setMaxResults(max)
         .getResultList();
-    return results;
   }
 
   @Override
   public Long count() {
-    Long count = 0L;
-    String querySring = "select count(u.id) from User u";
-    TypedQuery<Long> results = em.createQuery(querySring, Long.class);
-    try {
-      count = results.getSingleResult();
-    } catch (NoResultException e) {}
-    return count;
+    return Long.valueOf(
+        findAll().size());
   }
 
   /*
    * (non-Javadoc)
-   * @see ${package}.repository.UserRepository\#isLoginUnique(java.lang.String, java.lang.Long)
+   * @see com.mattheeuws.security.repository.UserRepository\#isLoginUnique(java.lang.String, java.lang.Long)
    */
   @Override
   public Boolean isLoginUnique(String login, Long id) {
@@ -99,61 +89,39 @@ public class UserRepositoryJpa implements UserRepository {
         .setParameter("login", login)
         .setParameter("id", (id != null ? id : 0))
         .getResultList();
-
     return results.isEmpty();
   }
 
   /*
    * (non-Javadoc)
-   * @see ${package}.repository.UserRepository\#count(java.lang.String, java.lang.String)
+   * @see com.mattheeuws.security.repository.UserRepository\#count(java.lang.String, java.lang.String)
    */
   @Override
   public Long count(String searchByFirstName, String searchByLastName) {
-    Long count = 0L;
-    String querySring = "select count(u.id) from User u " +
-        " where (:byFirstName IS NULL OR u.firstName like :byFirstName) " + 
-        " and (:byLastName IS NULL OR u.lastName like :byLastName)";
-    TypedQuery<Long> results = em.createQuery(querySring, Long.class)
-        .setParameter("byFirstName", searchByFirstName + "%")
-        .setParameter("byLastName", searchByLastName + "%");
-    try {
-      count = results.getSingleResult();
-    } catch (NoResultException e) {}
-    return count;
+    return Long.valueOf(
+        findAll(-1, -1, searchByFirstName, searchByLastName).size());
   }
 
   /*
    * (non-Javadoc)
-   * @see ${package}.repository.UserRepository\#findAll(int, int, java.lang.String, java.lang.String)
+   * @see com.mattheeuws.security.repository.UserRepository\#findAll(int, int, java.lang.String, java.lang.String)
    */
   @Override
   public List<User> findAll(int offset, int max, String searchByFirstName, String searchByLastName) {
     String queryString = "from User u " +
         " where (:byFirstName IS NULL OR u.firstName like :byFirstName) " +
         " and (:byLastName IS NULL OR u.lastName like :byLastName)";
-    List<User> results = em.createQuery(queryString, User.class)
+
+    TypedQuery<User> query = em.createQuery(queryString, User.class)
         .setParameter("byFirstName", searchByFirstName + "%")
-        .setParameter("byLastName", searchByLastName + "%")
-        .setFirstResult(offset)
-        .setMaxResults(max)
-        .getResultList();
-    return results;
-  }
+        .setParameter("byLastName", searchByLastName + "%");
 
-  /*
-   * (non-Javadoc)
-   * @see ${package}.repository.UserRepository\#findByEmployeeNumber(java.lang.String)
-   */
-  @Override
-  public User findByEmployeeNumber(String employeeNumber) {
-    String queryString = "from User u " +
-        " where u.employeeNumber = :employeeNumber ";
+    if (offset > -1 && max > -1) {
+      query.setFirstResult(offset);
+      query.setMaxResults(max);
+    }
 
-    List<User> results = em.createQuery(queryString, User.class)
-        .setParameter("employeeNumber", employeeNumber)
-        .getResultList();
-
-    return (!results.isEmpty() ? results.get(0) : null);
+    return query.getResultList();
   }
 
 }

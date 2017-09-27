@@ -2,7 +2,7 @@ package ${package}.repository;
 
 import java.util.List;
 
-import ${package}.model.User;
+import com.mattheeuws.security.model.User;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author
@@ -46,11 +46,4 @@ public interface UserRepository extends BaseRepository<User> {
    */
   public List<User> findAll(int offset, int max, String searchByFirstName, String searchByLastName);
 
-  /**
-   * Find User by employeeNumber.
-   * 
-   * @param String employeeNumber
-   * @return
-   */
-  public User findByEmployeeNumber(String employeeNumber);
 }

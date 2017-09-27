@@ -2,19 +2,13 @@ package ${package}.service;
 
 import java.util.List;
 
-import ${package}.dto.UserDto;
+import com.mattheeuws.security.dto.ProfileDto;
+import com.mattheeuws.security.dto.UserDto;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author
  */
 public interface UserService extends BaseService<UserDto> {
-
-  /**
-   * Return the available roles.
-   * 
-   * @return List<String>
-   */
-  public List<String> getUserRoles();
 
   /**
    * Return the available languages.
@@ -70,11 +64,10 @@ public interface UserService extends BaseService<UserDto> {
   public String generateLogin(String firstName, String lastName);
 
   /**
-   * Return user by its employeeNumber.
+   * Return the profile of the current logged in user.
    * 
-   * @param String employeeNumber
-   * @return UserDto
+   * @return ProfileDto
    */
-  public UserDto getByEmployeeNumber(String employeeNumber);
+  public ProfileDto getUserProfile();
 
 }
