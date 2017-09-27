@@ -4,24 +4,20 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import ${package}.model.type.UserLanguage;
-import ${package}.model.type.UserRole;
+import com.mattheeuws.security.model.type.UserLanguage;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author
@@ -38,9 +34,6 @@ public class User extends BaseEntity {
   @Column(name = "last_name", nullable = false, length = 50)
   private String lastName;
 
-  @Column(name = "employee_number", nullable = false)
-  private String employeeNumber;
-
   @Column(name = "login", nullable = false, unique = true, length = 20)
   private String login;
 
@@ -50,19 +43,27 @@ public class User extends BaseEntity {
   @Column(name = "email")
   private String email;
 
-  @Column(name = "activated", nullable = false)
-  private Boolean activated;
+  @Column(name = "photo", columnDefinition = "BLOB")
+  private byte[] photo;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "role", nullable = false)
-  private UserRole role;
+  @Column(name = "is_active", nullable = false)
+  private Boolean isActive;
+
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "user_role",
+      joinColumns = @JoinColumn(
+          name = "user_id", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(
+          name = "role_id", referencedColumnName = "id"))
+  private Collection<Role> roles;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "language", nullable = false)
   private UserLanguage userLanguage;
 
   public User() {
-    this.activated = false;
+    this.isActive = false;
   }
 
   /**
@@ -99,24 +100,6 @@ public class User extends BaseEntity {
    */
   public void setLastName(String lastName) {
     this.lastName = lastName;
-  }
-
-  /**
-   * Get the employeeNumber
-   *
-   * @return String
-   */
-  public String getEmployeeNumber() {
-    return employeeNumber;
-  }
-
-  /**
-   * Set the employeeNumber 
-   *
-   * @param String employeeNumber
-   */
-  public void setEmployeeNumber(String employeeNumber) {
-    this.employeeNumber = employeeNumber;
   }
 
   /**
@@ -174,50 +157,50 @@ public class User extends BaseEntity {
   }
 
   /**
-   * Get the activated
+   * Get the isActive
    *
    * @return Boolean
    */
-  public Boolean getActivated() {
-    return activated;
+  public Boolean getIsActive() {
+    return isActive;
   }
 
   /**
-   * Set the activated 
+   * Set the isActive 
    *
-   * @param Boolean activated
+   * @param Boolean isActive
    */
-  public void setActivated(Boolean activated) {
-    this.activated = activated;
+  public void setIsActive(Boolean isActive) {
+    this.isActive = isActive;
   }
 
   /**
-   * Get the role
+   * Get the roles
    *
-   * @return UserRole
+   * @return Collection<Role>
    */
-  public UserRole getRole() {
-    return role;
+  public Collection<Role> getRoles() {
+    return roles;
   }
 
   /**
-   * Set the role 
+   * Set the roles 
    *
-   * @param UserRole role
+   * @param Collection<Role> roles
    */
-  public void setRole(UserRole role) {
-    this.role = role;
+  public void setRoles(Collection<Role> roles) {
+    this.roles = roles;
   }
 
   /**
-   * A user can have multiple roles but for simplicity we stay with one role.
-   * Because spring security expect a collection of roles we do the following.
    * 
    * @return Collection<? extends GrantedAuthority>
    */
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-    authorities.add(new SimpleGrantedAuthority(this.getRole().toString()));
+    Set<GrantedAuthority> authorities = new HashSet<>();
+    for (Role role : roles) {
+      authorities.add(new SimpleGrantedAuthority(role.getName()));
+    }
     return authorities;
   }
 
@@ -238,4 +221,23 @@ public class User extends BaseEntity {
   public void setUserLanguage(UserLanguage userLanguage) {
     this.userLanguage = userLanguage;
   }
+
+  /**
+   * Get the photo
+   *
+   * @return byte[]
+   */
+  public byte[] getPhoto() {
+    return photo;
+  }
+
+  /**
+   * Set the photo 
+   *
+   * @param byte[] photo
+   */
+  public void setPhoto(byte[] photo) {
+    this.photo = photo;
+  }
+
 }

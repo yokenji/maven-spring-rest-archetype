@@ -1,9 +1,7 @@
 package ${package}.service.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,14 +12,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ${package}.dto.UserDto;
-import ${package}.model.User;
-import ${package}.model.type.UserLanguage;
-import ${package}.model.type.UserRole;
-import ${package}.security.SpringSecurityService;
-import ${package}.service.UserService;
-import ${package}.repository.UserRepository;
-
+import com.mattheeuws.security.dto.ProfileDto;
+import com.mattheeuws.security.dto.UserDto;
+import com.mattheeuws.security.exception.NotFoundException;
+import com.mattheeuws.security.model.Role;
+import com.mattheeuws.security.model.User;
+import com.mattheeuws.security.model.type.UserLanguage;
+import com.mattheeuws.security.repository.UserRepository;
+import com.mattheeuws.security.security.SpringSecurityService;
+import com.mattheeuws.security.service.UserService;
+import com.mattheeuws.security.util.impl.StringHelper;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author
@@ -30,68 +30,62 @@ import ${package}.repository.UserRepository;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-  private UserRepository userRepository;
-  private SpringSecurityService springSecurityService;
+  private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
-  private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
+  private UserRepository userRepository;
+  private SpringSecurityService securityService;
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository,SpringSecurityService springSecurityService) {
+  public UserServiceImpl(UserRepository userRepository, SpringSecurityService securityService) {
     this.userRepository = userRepository;
-    this.springSecurityService = springSecurityService;
+    this.securityService = securityService;
   }
 
   /* (non-Javadoc)
-   * @see ${package}.service.BaseService\#save(java.lang.Object)
+   * @see com.mattheeuws.security.service.BaseService\#save(java.lang.Object)
    */
   @Override
   public UserDto save(UserDto dto) {
-    UserDto retval = null;
-
-    User user = userRepository.save(
-        mapTo(dto));
-
-    if (user != null)
-      retval = mapTo(user);
-
-    return retval;
+    return mapTo(userRepository.save(
+        mapTo(dto)));
   }
 
   /* (non-Javadoc)
-   * @see ${package}.service.BaseService\#getById(java.lang.Long)
+   * @see com.mattheeuws.security.service.BaseService\#getById(java.lang.Long)
    */
   @Override
   public UserDto getById(Long id) {
-    log.info("Find User by Id: " + id);
-    return mapTo(
-        userRepository.findById(id));
+    logger.debug("Find User by Id: " + id);
+    User user = userRepository.findById(id);
+    if (user == null)
+      throw new NotFoundException("User with id: " + id + " not found!");
+    return mapTo(user);
   }
-  
+
   /* (non-Javadoc)
-   * @see ${package}.service.BaseService\#getAll()
+   * @see com.mattheeuws.security.service.BaseService\#getAll()
    */
   @Override
   public List<UserDto> getAll() {
-    log.info("Find all users.");
+    logger.debug("Find all users.");
     return mapTo(
         userRepository.findAll()
         );
   }
 
   /* (non-Javadoc)
-   * @see ${package}.service.BaseService\#getAll(java.lang.Integer, java.lang.Integer, java.lang.String)
+   * @see com.mattheeuws.security.service.BaseService\#getAll(java.lang.Integer, java.lang.Integer, java.lang.String)
    */
   @Override
   public List<UserDto> getAll(Integer offset, Integer max) {
-    log.info("Find all Users, Offset: " + offset + ", Max: " + max);
+    logger.debug("Find all Users starting from: " + offset + " until: " + max);
     return mapTo(
-        userRepository.findAll(offset, max)
-        ); 
+        userRepository.findAll(offset, max)); 
   }
 
   /*
    * (non-Javadoc)
-   * @see ${package}.service.BaseService\#count()
+   * @see com.mattheeuws.security.service.BaseService\#count()
    */
   @Override
   public Long count() {
@@ -105,21 +99,25 @@ public class UserServiceImpl implements UserService {
    * @return User
    */
   private User mapTo(UserDto userDto) {
-    log.info("Map an UserDto to an User entity.");
-    User user = userRepository.findById(userDto.getId());
-    if (user == null)
-      user = new User();
+    logger.info("Map an UserDto to an User entity.");
+    User user = null;
+    if (userDto.getId() != null) {
+      user = userRepository.findById(userDto.getId());
+      if (user == null)
+        throw new NotFoundException("User with id: " + userDto.getId() + " not found");
+    } else {
+        user = new User();
+    }
 
     if (userDto.getPassword() != null && !userDto.getPassword().isEmpty())
       user.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));
 
     user.setFirstName(userDto.getFirstName());
     user.setLastName(userDto.getLastName());
-    user.setEmployeeNumber(userDto.getEmployeeNumber());
     user.setEmail(userDto.getEmail());
     user.setLogin(userDto.getLogin());
-    user.setActivated(userDto.getActivated());
-    user.setRole(UserRole.userRole(userDto.getRole()));
+    user.setIsActive(userDto.getIsActive());
+    
     user.setUserLanguage(UserLanguage.userLanguage(userDto.getLanguage()));
 
     return user;
@@ -132,19 +130,21 @@ public class UserServiceImpl implements UserService {
    * @return UserDto
    */
   private UserDto mapTo(User user) {
-    log.debug("Map an User entity to an UserDto.");
-    UserDto dto = new UserDto(
-        user.getId(),
-        user.getFirstName(),
-        user.getLastName(),
-        user.getEmployeeNumber(),
-        user.getLogin(),
-        null,
-        user.getActivated(),
-        user.getRole().name(),
-        user.getUserLanguage().name(),
-        user.getEmail());
-
+    logger.debug("Map an User entity to an UserDto.");
+    UserDto dto = new UserDto();
+    dto.setId(user.getId());
+    dto.setDateCreated(user.getDateCreated());
+    dto.setCreatedBy(user.getCreatedBy());
+    dto.setLastUpdated(user.getLastUpdated());
+    dto.setUpdatedBy(user.getUpdatedBy());
+    dto.setFirstName(user.getFirstName());
+    dto.setLastName(user.getLastName());
+    dto.setLogin(user.getLogin());
+    
+    dto.setIsActive(user.getIsActive());
+    dto.setRoles(null);
+    dto.setLanguage(user.getUserLanguage().name());
+    dto.setEmail(user.getEmail());
     return dto;
   }
 
@@ -166,20 +166,7 @@ public class UserServiceImpl implements UserService {
 
   /*
    * (non-Javadoc)
-   * @see ${package}.service.UserService\#getUserRoles()
-   */
-  @Override
-  public List<String> getUserRoles() {
-    List<String> userRoles = new ArrayList<>();
-    for (UserRole role : UserRole.values()) {
-      userRoles.add(role.name());
-    }
-    return userRoles;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see ${package}.service.UserService\#getUserLanguages()
+   * @see com.mattheeuws.security.service.UserService\#getUserLanguages()
    */
   @Override
   public List<String> getUserLanguages() {
@@ -192,7 +179,7 @@ public class UserServiceImpl implements UserService {
 
   /*
    * (non-Javadoc)
-   * @see ${package}.service.UserService\#isLoginUnique(java.lang.String, java.lang.Long)
+   * @see com.mattheeuws.security.service.UserService\#isLoginUnique(java.lang.String, java.lang.Long)
    */
   @Override
   public Boolean isLoginUnique(String login, Long id) {
@@ -201,7 +188,7 @@ public class UserServiceImpl implements UserService {
 
   /*
    * (non-Javadoc)
-   * @see ${package}.service.UserService\#getByLogin(java.lang.String)
+   * @see com.mattheeuws.security.service.UserService\#getByLogin(java.lang.String)
    */
   @Override
   public UserDto getByLogin(String login) {
@@ -211,7 +198,7 @@ public class UserServiceImpl implements UserService {
 
   /*
    * (non-Javadoc)
-   * @see ${package}.service.UserService\#count(java.lang.String, java.lang.String)
+   * @see com.mattheeuws.security.service.UserService\#count(java.lang.String, java.lang.String)
    */
   @Override
   public Long count(String searchByFirstName, String searchByLastName) {
@@ -220,7 +207,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<UserDto> getAll(Integer offset, Integer max, String searchByFirstName, String searchByLastName) {
-    log.info("Find all Users, Offset: " + offset + ", Max: " + max, ", Filtered by: firstName: " + searchByFirstName + ", LastName: " + searchByLastName);
+    logger.info("Find all Users, Offset: " + offset + ", Max: " + max, ", Filtered by: firstName: " + searchByFirstName + ", LastName: " + searchByLastName);
     return mapTo(
         userRepository.findAll(offset, max, searchByFirstName, searchByLastName)
         ); 
@@ -228,11 +215,11 @@ public class UserServiceImpl implements UserService {
 
   /*
    * (non-Javadoc)
-   * @see ${package}.service.UserService\#generateLogin(java.lang.String, java.lang.String)
+   * @see com.mattheeuws.security.service.UserService\#generateLogin(java.lang.String, java.lang.String)
    */
   @Override
   public String generateLogin(String firstName, String lastName) {
-    log.info("Generate an user login, firstName: " + firstName + ", lastName: " + lastName);
+    logger.info("Generate an user login, firstName: " + firstName + ", lastName: " + lastName);
     String login = null;
     Boolean finished = false;
 
@@ -248,7 +235,7 @@ public class UserServiceImpl implements UserService {
       }
 
       login = (firstName.replaceAll("\\s", "").substring(0, searchPosition) + lastName.replaceAll("\\s", "")).toLowerCase();
-      log.info("Proposed login: " + login);
+      logger.info("Proposed login: " + login);
       if (userRepository.findByLogin(login) == null)
         finished = true;
 
@@ -257,20 +244,27 @@ public class UserServiceImpl implements UserService {
     return login;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see ${package}.service.UserService\#getByEmployeeNumber(java.lang.String)
-   */
   @Override
-  public UserDto getByEmployeeNumber(String employeeNumber) {
-    log.info("Find User by employeeNumber: " + employeeNumber);
-    UserDto retval = null;
-    User user = userRepository.findByEmployeeNumber(employeeNumber);
+  public ProfileDto getUserProfile() {
+    User currentUser = securityService.getCurrentUser();
+    return new ProfileDto(
+        currentUser.getFirstName(),
+        currentUser.getLastName(),
+        currentUser.getLogin(),
+        StringHelper.byteArrayToBase64String(currentUser.getPhoto()),
+        convertRolesTo(currentUser.getRoles())
+        );
+  }
 
-    if (user != null)
-      retval = mapTo(userRepository.findByEmployeeNumber(employeeNumber));
-
-    return retval;
+  /**
+   * @param Collection<Role> roles
+   * 
+   * @return List<String>
+   */
+  private List<String> convertRolesTo(Collection<Role> roles) {
+    return roles.stream()
+        .map(x -> x.getName())
+        .collect(Collectors.toList());
   }
 
 }

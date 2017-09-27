@@ -20,6 +20,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -62,117 +63,26 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
     this.applicationContext = applicationContext;
   }
 
-  @Bean
-  public LocaleResolver localeResolver() {
-    SessionLocaleResolver resolver = new SessionLocaleResolver();
-    resolver.setDefaultLocale(new Locale(DEFAULT_LANGUAGE));
-    return resolver;
-  }
-
-  /* (non-Javadoc)
-   * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter\#addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry)
-   */
   @Override
-  public void addInterceptors(InterceptorRegistry registry) {
-    LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-    interceptor.setParamName("lang");
-    registry.addInterceptor(interceptor);
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/**")
+    .allowedHeaders("*")
+    .allowedMethods("*");
   }
 
-  private Set<ITemplateResolver> templateResolvers() {
-    Set<ITemplateResolver> resolvers = new LinkedHashSet<>();
-    resolvers.add(templateResolver());
-    resolvers.add(emailTemplateResolver());
-    return resolvers;
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry
+      .addResourceHandler("swagger-ui.html")
+      .addResourceLocations("classpath:/META-INF/resources/");
+    registry
+      .addResourceHandler("/webjars/**")
+      .addResourceLocations("classpath:/META-INF/resources/webjars/");
   }
-
-  private ITemplateResolver templateResolver() {
-    SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
-    resolver.setCheckExistence(true);
-    resolver.setOrder(1);
-    resolver.setApplicationContext(applicationContext);
-    resolver.setPrefix("/WEB-INF/thymeleaf/");
-    resolver.setCacheable(false);
-    resolver.setSuffix(".html");
-    resolver.setTemplateMode(TemplateMode.HTML);
-    resolver.setCharacterEncoding(ENCODING);
-    return resolver;
-  }
-
-  @Bean
-  public SpringTemplateEngine templateEngine() {
-    SpringTemplateEngine engine = new SpringTemplateEngine();
-    engine.setEnableSpringELCompiler(true);
-    engine.setTemplateResolvers(templateResolvers());
-    engine.addDialect(new LayoutDialect());
-    engine.addDialect(new SpringSecurityDialect());
-    return engine;
-  }
-
-
-  @Bean
-  public ViewResolver viewResolver() {
-    ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-    resolver.setTemplateEngine(templateEngine());
-    resolver.setCharacterEncoding(ENCODING);
-    resolver.setOrder(1);
-    return resolver;
-  }
-
-  /**
-   * Template Resolver for email templates.
-   * 
-   * @return
-   */
-   private ITemplateResolver emailTemplateResolver() {
-     ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
-     resolver.setOrder(2);
-     resolver.setPrefix("/email/");
-     resolver.setSuffix(".html");
-     resolver.setTemplateMode(TemplateMode.HTML);
-     resolver.setCharacterEncoding(ENCODING);
-     resolver.setCacheable(false);
-     return resolver;
-   }
-
-   /* (non-Javadoc)
-    * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter\#addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry)
-    */
-   @Override
-   public void addResourceHandlers(ResourceHandlerRegistry registry) {
-     registry
-       .addResourceHandler("/**")
-       .addResourceLocations("/");
-   }
-
-   @Bean
-   public MessageSource messageSource() {
-     ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-     messageSource.setBasename("messages");
-     messageSource.setDefaultEncoding(ENCODING);
-     return messageSource;
-   }
 
    @Bean(name = "localBeanValidator")
    public Validator validator() {
      return new LocalValidatorFactoryBean();
    }
-
-//   @Bean
-//   @Profile("prod")
-//   public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
-//     System.err.println("ERRo........");
-//     // org.springframework.security.access.AccessDeniedException
-//     SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();
-//     Properties errorMaps = new Properties();
-//     //errorMaps.setProperty("org.springframework.security.access.AccessDeniedException", "/errors/error");
-//     errorMaps.setProperty("NoSuchRequestHandlingMethodException", "/errors/error");
-//     errorMaps.setProperty("NoHandlerFoundException", "/errors/error");
-////     errorMaps.setProperty("", "/errors/error");
-////     errorMaps.setProperty("", "/errors/error");
-//     exceptionResolver.setExceptionMappings(errorMaps);
-//     exceptionResolver.setDefaultErrorView("errors/error");
-//     return exceptionResolver;
-//   }
 
 }

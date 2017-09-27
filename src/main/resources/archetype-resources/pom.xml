@@ -18,22 +18,23 @@
     <junit.version>4.12</junit.version>
 
     <spring-framework.version>4.3.2.RELEASE</spring-framework.version>
-    <spring-security.version>4.1.1.RELEASE</spring-security.version>
-    <thymeleaf.version>3.0.1.RELEASE</thymeleaf.version>
-    <thymeleaf-spring4.version>3.0.1.RELEASE</thymeleaf-spring4.version>
-
-    <thymeleaf-security.version>3.0.0.RELEASE</thymeleaf-security.version>
-    <thymeleaf-extra-springsecurity4.version>3.0.0.RELEASE</thymeleaf-extra-springsecurity4.version>
-    <thymeleaf-layout-dialect.version>2.0.1</thymeleaf-layout-dialect.version>
+    <spring-security.version>4.2.3.RELEASE</spring-security.version>
 
     <hibernate.validator>5.4.1.Final</hibernate.validator>
     <hibernate.entitymanager>5.2.10.Final</hibernate.entitymanager>
     <mysql.connector>5.1.35</mysql.connector>
 
+    <springfox-swagger.version>2.7.0</springfox-swagger.version>
     <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
     <java-mail.version>1.4.7</java-mail.version>
 
+    <commons-codec.version>1.9</commons-codec.version>
+    <commons-io.version>2.4</commons-io.version>
+
     <tomcat.service.port>7272</tomcat.service.port>
+
+    <jsonwebtoken.version>0.7.0</jsonwebtoken.version>
+    <swagger.version></swagger.version>
   </properties>
 
   <profiles>
@@ -47,31 +48,6 @@
             <directory>src/main/resources/dev</directory>
           </resource>
         </resources>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.5.0</version>
-            <executions>
-              <execution>
-                <id>exec-npm-run</id>
-                <phase>generate-sources</phase>
-                <configuration>
-                  <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
-                  <executable>npm</executable>
-                  <arguments>
-                    <argument>run</argument>
-                    <argument>dev</argument>
-                    <argument>${project.artifactId}</argument>
-                  </arguments>
-                </configuration>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
       </build>
     </profile>
 
@@ -84,31 +60,6 @@
             <directory>src/main/resources/prod</directory>
           </resource>
         </resources>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.5.0</version>
-            <executions>
-              <execution>
-                <id>exec-npm-run</id>
-                <phase>generate-sources</phase>
-                <configuration>
-                  <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
-                  <executable>npm</executable>
-                  <arguments>
-                    <argument>run</argument>
-                    <argument>prod</argument>
-                    <argument>${project.artifactId}</argument>
-                  </arguments>
-                </configuration>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
       </build>
     </profile>
 
@@ -121,31 +72,6 @@
             <directory>src/main/resources/test</directory>
           </resource>
         </resources>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.5.0</version>
-            <executions>
-              <execution>
-                <id>exec-npm-run</id>
-                <phase>generate-sources</phase>
-                <configuration>
-                  <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
-                  <executable>npm</executable>
-                  <arguments>
-                    <argument>run</argument>
-                    <argument>test</argument>
-                    <argument>${project.artifactId}</argument>
-                  </arguments>
-                </configuration>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
       </build>
     </profile>
 
@@ -264,26 +190,24 @@
       <version>${mysql.connector}</version>
     </dependency>
 
-    <!-- Thymeleaf. -->
+    <!-- JSonWebToken -->
     <dependency>
-      <groupId>org.thymeleaf</groupId>
-      <artifactId>thymeleaf</artifactId>
-      <version>${thymeleaf.version}</version>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt</artifactId>
+      <version>${jsonwebtoken.version}</version>
     </dependency>
+
+    <!-- swagger -->
     <dependency>
-      <groupId>org.thymeleaf</groupId>
-      <artifactId>thymeleaf-spring4</artifactId>
-      <version>${thymeleaf-spring4.version}</version>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger2</artifactId>
+      <version>${springfox-swagger.version}</version>
     </dependency>
+
     <dependency>
-      <groupId>org.thymeleaf.extras</groupId>
-      <artifactId>thymeleaf-extras-springsecurity4</artifactId>
-      <version>${thymeleaf-extra-springsecurity4.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>nz.net.ultraq.thymeleaf</groupId>
-      <artifactId>thymeleaf-layout-dialect</artifactId>
-      <version>${thymeleaf-layout-dialect.version}</version>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger-ui</artifactId>
+      <version>${springfox-swagger.version}</version>
     </dependency>
 
   <!-- Servlet provided by Tomcat. -->
@@ -300,7 +224,7 @@
       <scope>provided</scope>
     </dependency>
 
- <!--Quartz scheduler -->
+    <!--Quartz scheduler -->
     <dependency>
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
