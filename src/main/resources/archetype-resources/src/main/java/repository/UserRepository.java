@@ -2,7 +2,7 @@ package ${package}.repository;
 
 import java.util.List;
 
-import com.mattheeuws.security.model.User;
+import ${package}.model.User;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

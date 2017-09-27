@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.mattheeuws.security.model.type.UserLanguage;
+import ${package}.model.type.UserLanguage;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

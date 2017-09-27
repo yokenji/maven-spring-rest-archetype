@@ -2,8 +2,8 @@ package ${package}.service;
 
 import java.util.List;
 
-import com.mattheeuws.security.dto.ProfileDto;
-import com.mattheeuws.security.dto.UserDto;
+import ${package}.dto.ProfileDto;
+import ${package}.dto.UserDto;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

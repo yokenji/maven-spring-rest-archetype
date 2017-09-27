@@ -12,16 +12,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mattheeuws.security.dto.ProfileDto;
-import com.mattheeuws.security.dto.UserDto;
-import com.mattheeuws.security.exception.NotFoundException;
-import com.mattheeuws.security.model.Role;
-import com.mattheeuws.security.model.User;
-import com.mattheeuws.security.model.type.UserLanguage;
-import com.mattheeuws.security.repository.UserRepository;
-import com.mattheeuws.security.security.SpringSecurityService;
-import com.mattheeuws.security.service.UserService;
-import com.mattheeuws.security.util.impl.StringHelper;
+import ${package}.dto.ProfileDto;
+import ${package}.dto.UserDto;
+import ${package}.exception.NotFoundException;
+import ${package}.model.Role;
+import ${package}.model.User;
+import ${package}.model.type.UserLanguage;
+import ${package}.repository.UserRepository;
+import ${package}.security.SpringSecurityService;
+import ${package}.service.UserService;
+import ${package}.util.impl.StringHelper;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

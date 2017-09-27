@@ -10,11 +10,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mattheeuws.security.dto.RoleDto;
-import com.mattheeuws.security.exception.NotFoundException;
-import com.mattheeuws.security.model.Role;
-import com.mattheeuws.security.repository.RoleRepository;
-import com.mattheeuws.security.service.RoleService;
+import ${package}.dto.RoleDto;
+import ${package}.exception.NotFoundException;
+import ${package}.model.Role;
+import ${package}.repository.RoleRepository;
+import ${package}.service.RoleService;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author

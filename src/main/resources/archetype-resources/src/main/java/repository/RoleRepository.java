@@ -1,6 +1,6 @@
 package ${package}.repository;
 
-import com.mattheeuws.security.model.Role;
+import ${package}.model.Role;
 
 /**
  * @author Delsael Kenji <kenji@delasel.com>, Original Author

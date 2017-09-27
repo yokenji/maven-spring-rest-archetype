@@ -12,8 +12,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.mattheeuws.security.exception.ErrorResource;
-import com.mattheeuws.security.exception.NotFoundException;
+import ${package}.exception.ErrorResource;
+import ${package}.exception.NotFoundException;
 
 
 /**
