@@ -24,7 +24,6 @@ import ${package}.security.JwtAuthenticationAccessDeniedHandler;
 import ${package}.security.JwtAuthenticationEntryPoint;
 import ${package}.security.JwtAuthenticationFilter;
 
-import ${package}.model.type.UserRole;
 import ${package}.security.AccessDeniedHandler;
 import ${package}.security.CustomAuthenticationSuccessHandler;
 import ${package}.security.CustomUserDetailsService;

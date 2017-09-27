@@ -5,7 +5,7 @@ import org.springframework.validation.BindingResult;
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author
  */
-public class CustomResourceException extends Exception {
+public class CustomResourceException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
