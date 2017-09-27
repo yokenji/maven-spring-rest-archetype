@@ -1,5 +1,5 @@
 # Maven Spring MVC Archetype 
-> Generate Spring MVC Project
+> Generate Spring MVC REST Project
 
 ## Installation 
 First make sure you have [maven](https://maven.apache.org/) installed, then go into the directory of the generator and install the archetype using this command.
