@@ -1,6 +1,5 @@
 package ${package}.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -24,10 +23,6 @@ public class UserDto extends BaseDto{
   @Pattern(regexp = "[\\w\\p{L}\\s\\.\\-]*")
   private String lastName;
 
-  @Size(min = 1, max = 19)
-  @Pattern(regexp = "[A-Z0-9]+")
-  private String employeeNumber;
-
   @NotNull
   @Size(min = 1, max = 20)
   @Pattern(regexp = "[a-zA-Z0-9]*")
@@ -43,10 +38,9 @@ public class UserDto extends BaseDto{
   private String email;
 
   @NotNull
-  private Boolean activated;
+  private Boolean isActive;
 
-  @NotNull
-  private String role;
+  private List<String> roles;
 
   @NotNull
   @Pattern(regexp = "[A-Z]{2}")
@@ -56,7 +50,7 @@ public class UserDto extends BaseDto{
    * Default constructor.
    */
   public UserDto() {
-    this.activated = false;
+    this.isActive = false;
   }
 
   /**
@@ -65,23 +59,22 @@ public class UserDto extends BaseDto{
    * @param Long id
    * @param String firstName
    * @param String lastName
-   * @param String employeeNumber
    * @param String login
    * @param String password
-   * @param Boolean activated
+   * @param Boolean isActive
+   * @param List<String> roles
    * @param String language
    * @param String email;
    */
-  public UserDto(Long id, String firstName, String lastName, String employeeNumber,
-                 String login, String password, Boolean activated, String role, String language, String email) {
+  public UserDto(Long id, String firstName, String lastName, String login, 
+      String password, Boolean isActive, List<String> roles, String language, String email) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.employeeNumber = employeeNumber;
     this.login = login;
     this.password = password;
-    this.activated = activated;
-    this.role = role;
+    this.isActive = isActive;
+    this.roles = roles;
     this.language = language;
     this.email = email;
   }
@@ -91,6 +84,7 @@ public class UserDto extends BaseDto{
    *
    * @return Long
    */
+  @Override
   public Long getId() {
     return id;
   }
@@ -100,6 +94,7 @@ public class UserDto extends BaseDto{
    *
    * @param Long id
    */
+  @Override
   public void setId(Long id) {
     this.id = id;
   }
@@ -141,24 +136,6 @@ public class UserDto extends BaseDto{
   }
 
   /**
-   * Get the employeeNumber
-   *
-   * @return String
-   */
-  public String getEmployeeNumber() {
-    return employeeNumber;
-  }
-
-  /**
-   * Set the employeeNumber 
-   *
-   * @param String employeeNumber
-   */
-  public void setEmployeeNumber(String employeeNumber) {
-    this.employeeNumber = employeeNumber;
-  }
-
-  /**
    * Get the login
    *
    * @return String
@@ -195,39 +172,39 @@ public class UserDto extends BaseDto{
   }
 
   /**
-   * Get the activated
+   * Get the isActive
    *
    * @return Boolean
    */
-  public Boolean getActivated() {
-    return activated;
+  public Boolean getIsActive() {
+    return isActive;
   }
 
   /**
-   * Set the activated 
+   * Set the isActive 
    *
-   * @param Boolean activated
+   * @param Boolean isActive
    */
-  public void setActivated(Boolean activated) {
-    this.activated = activated;
+  public void setIsActive(Boolean isActive) {
+    this.isActive = isActive;
   }
 
   /**
-   * Get the role
+   * Get the roles
    *
-   * @return String
+   * @return List<String>
    */
-  public String getRole() {
-    return role;
+  public List<String> getRoles() {
+    return roles;
   }
 
   /**
-   * Set the role 
+   * Set the roles 
    *
-   * @param String role
+   * @param List<String> roles
    */
-  public void setRole(String role) {
-    this.role = role;
+  public void setRoles(List<String> roles) {
+    this.roles = roles;
   }
 
   /**
@@ -265,4 +242,5 @@ public class UserDto extends BaseDto{
   public void setEmail(String email) {
     this.email = email;
   }
+
 }
