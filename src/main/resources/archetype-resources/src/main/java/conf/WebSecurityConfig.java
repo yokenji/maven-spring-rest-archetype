@@ -23,12 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import ${package}.security.JwtAuthenticationAccessDeniedHandler;
 import ${package}.security.JwtAuthenticationEntryPoint;
 import ${package}.security.JwtAuthenticationFilter;
-
-import ${package}.security.AccessDeniedHandler;
-import ${package}.security.CustomAuthenticationSuccessHandler;
-import ${package}.security.CustomUserDetailsService;
-
-import ${package}.security.CustomAuthenticationSuccessHandler;
 import ${package}.security.CustomUserDetailsService;
 
 /**
