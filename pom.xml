@@ -3,9 +3,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.delsael.archetypes</groupId>
+  <groupId>com.mattheeuws.archetypes</groupId>
   <artifactId>spring-rest</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
+
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>nexus</id>
+      <name>Nexus Repository Manager</name>
+      <url>http://ve1-repo:9010/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus</id>
+      <url>http://ve1-repo:9010/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
 </project>

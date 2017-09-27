@@ -1,6 +1,6 @@
 package ${package}.service;
 
-import com.mattheeuws.security.dto.RoleDto;
+import ${package}.dto.RoleDto;
 
 /**
  * @author Delsael Kenji <kenji@delsael.com>, Original Author
